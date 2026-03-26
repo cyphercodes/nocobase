@@ -39,7 +39,9 @@ export class XAIProvider extends LLMProvider {
       Object.entries(restModelOptions).filter(([key]) => !unsupportedParams.includes(key)),
     );
 
-    const responseFormatOptions = {
+    // Build response_format options if needed
+    // Note: ChatXAI doesn't support modelKwargs, so we handle response_format differently
+    const responseFormatOptions: Record<string, any> = {
       type: responseFormat ?? 'text',
     };
     if (responseFormat === 'json_schema' && schema) {
@@ -49,9 +51,7 @@ export class XAIProvider extends LLMProvider {
     return new ChatXAI({
       apiKey,
       ...filteredModelOptions,
-      modelKwargs: {
-        response_format: responseFormatOptions,
-      },
+      responseFormat: responseFormatOptions,
       configuration: {
         baseURL: baseURL || this.baseURL,
       },
